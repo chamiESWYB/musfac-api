@@ -1,9 +1,9 @@
 services:
   - type: web
     name: php-rest-api
-    env: static
-    buildCommand: ""
-    startCommand: "php -S 0.0.0.0:10000 -t ."
+    runtime: docker
+    repo: https://github.com/chamiESWYB/musfac-api
+    branch: main
     envVars:
       - key: HOST
         value: musfacdb-musfac.l.aivencloud.com
