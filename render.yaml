@@ -13,3 +13,5 @@ services:
         value: avnadmin
       - key: DB_PASS
         value: AVNS_SaWz0jUU6rz9dOah3-l
+    buildCommand: ""
+    startCommand: "php -S 0.0.0.0:10000 -t ."

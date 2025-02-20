@@ -10,8 +10,8 @@ COPY . /var/www/html/
 # Set working directory
 WORKDIR /var/www/html
 
-# Expose port 80 for the application
-EXPOSE 80
+# Expose port 10000 (Render uses this port)
+EXPOSE 10000
 
 # Start Apache server
 CMD ["apache2-foreground"]
