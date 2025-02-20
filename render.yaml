@@ -6,12 +6,12 @@ services:
     branch: main
     envVars:
       - key: HOST
-        value: musfacdb-musfac.l.aivencloud.com
+        value: sql307.infinityfree.com
       - key: DB_NAME
-        value: defaultdb
+        value: if0_38357642_mufac_rest_api
       - key: DB_USER
-        value: avnadmin
+        value: if0_38357642
       - key: DB_PASS
-        value: AVNS_SaWz0jUU6rz9dOah3-l
+        value: 22694Wcc123
     buildCommand: ""
     startCommand: "php -S 0.0.0.0:10000 -t ."
