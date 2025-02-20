@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: php-rest-api
+    name: musfac-api
     runtime: docker
     repo: https://github.com/chamiESWYB/musfac-api
     branch: main
