@@ -1,0 +1,28 @@
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore environment files
+.env
+*.env
+
+# Ignore logs and cache
+logs/
+cache/
+*.log
+
+# Ignore vendor folder (if using Composer)
+vendor/
+
+# Ignore IDE/editor files
+.idea/
+.vscode/
+
+# Ignore deployment files
+node_modules/
+composer.lock
+
+# Ignore temporary files
+*.swp
+*.bak
+*.tmp
