@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: php-rest-api
+    env: static
+    buildCommand: ""
+    startCommand: "php -S 0.0.0.0:10000 -t ."
+    envVars:
+      - key: HOST
+        value: musfacdb-musfac.l.aivencloud.com
+      - key: DB_NAME
+        value: defaultdb
+      - key: DB_USER
+        value: avnadmin
+      - key: DB_PASS
+        value: AVNS_SaWz0jUU6rz9dOah3-l

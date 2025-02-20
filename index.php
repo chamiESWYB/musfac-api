@@ -5,10 +5,10 @@ header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
 header("Access-Control-Allow-Headers: Content-Type");
 
 // Database connection
-$host = 'localhost';
-$db = 'mufac_rest_api';
-$user = 'root'; 
-$pass = ''; 
+$host = 'musfacdb-musfac.l.aivencloud.com';
+$db = 'defaultdb';
+$user = 'avnadmin'; 
+$pass = 'AVNS_SaWz0jUU6rz9dOah3-l'; 
 
 $conn = new mysqli($host, $user, $pass, $db);
 
