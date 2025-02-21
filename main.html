@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Data Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input,
+        button {
+            margin: 5px;
+            padding: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>API Data Management</h1>
+
+    <!-- Form to collect data -->
+    <form id="dataForm">
+        <label for="id">ID:</label>
+        <input type="text" id="id" name="id" placeholder="Enter ID"><br>
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" placeholder="Enter Name"><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" placeholder="Enter Email"><br>
+
+        <button type="button" onclick="addData()">Add Data (POST)</button>
+        <button type="button" onclick="updateData()">Update Data (PUT)</button>
+        <button type="button" onclick="deleteData()">Delete Data (DELETE)</button>
+    </form>
+
+    <!-- Display API response -->
+    <h2>API Response</h2>
+    <pre id="response"></pre>
+
+    <!-- Table to display data -->
+    <h2>Data Table</h2>
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <!-- JavaScript to handle API calls -->
+    <script>
+        const apiUrl = 'https://musfac-api.onrender.com';
+
+        // Load data on page load
+        fetchData();
+
+        // Function to Fetch and display data
+        async function fetchData() {
+            const response = await fetch(`${apiUrl}/users`);
+            const result = await response.json();
+
+            if (result.status === 200 && Array.isArray(result.data)) {
+                updateTable(result.data);
+            } else {
+                document.getElementById('response').textContent = "Error fetching data!";
+            }
+        }
+
+        // Function to update the table with data
+        function updateTable(data) {
+            const tableBody = document.querySelector("#dataTable tbody");
+            tableBody.innerHTML = ""; // Clear existing table data
+
+            data.forEach(item => {
+                const row = document.createElement("tr");
+                row.setAttribute("data-id", item.id);
+                row.innerHTML = `
+                <td>${item.id}</td>
+                <td>${item.name}</td>
+                <td>${item.email}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Function to update or add a single row in the table
+        function updateTableRow(data) {
+            let row = document.querySelector(`tr[data-id="${data.id}"]`);
+
+            if (row) {
+                // Update existing row
+                row.innerHTML = `
+                <td>${data.id}</td>
+                <td>${data.name}</td>
+                <td>${data.email}</td>
+                `;
+            } else {
+                // Add new row if it doesn't exist
+                const tableBody = document.querySelector("#dataTable tbody");
+                const newRow = document.createElement("tr");
+                newRow.setAttribute("data-id", data.id);
+                newRow.innerHTML = `
+                <td>${data.id}</td>
+                <td>${data.name}</td>
+                <td>${data.email}</td>
+                `;
+                tableBody.appendChild(newRow);
+            }
+        }
+
+        // Function to remove a row from the table
+        function removeTableRow(id) {
+            const rowToDelete = document.querySelector(`tr[data-id="${id}"]`);
+            if (rowToDelete) rowToDelete.remove();
+        }
+
+        // Function to add data using POST
+        async function addData() {
+            const data = {
+                id: document.getElementById('id').value,
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value
+            };
+
+            const response = await fetch(`${apiUrl}/users`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            document.getElementById('response').textContent = JSON.stringify(result, null, 2);
+
+            if (result.status === 201 && result.data) {
+                updateTableRow(result.data);
+            }
+        }
+
+        // Function to update data using PUT
+        async function updateData() {
+            const data = {
+                id: document.getElementById('id').value,
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value
+            };
+
+            const response = await fetch(`${apiUrl}/users/${data.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            document.getElementById('response').textContent = JSON.stringify(result, null, 2);
+
+            if (result.status === 200 && result.data) {
+                updateTableRow(result.data);
+            }
+        }
+
+        // Function to delete data using DELETE
+        async function deleteData() {
+            const id = document.getElementById('id').value;
+
+            const response = await fetch(`${apiUrl}/users/${id}`, {
+                method: 'DELETE'
+            });
+
+            const result = await response.json();
+            document.getElementById('response').textContent = JSON.stringify(result, null, 2);
+
+            if (result.status === 200) {
+                removeTableRow(id);
+            }
+        }
+    </script>
+</body>
+
+</html>
