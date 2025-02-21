@@ -27,8 +27,51 @@ function sendResponse($status, $data = null, $message = null) {
     exit;
 }
 
+// Parse the URL
+$requestUri = $_SERVER['REQUEST_URI'];
+$requestMethod = $_SERVER['REQUEST_METHOD'];
+
+// Remove query string from the URL
+$requestUri = strtok($requestUri, '?');
+
+// Define routes
+$routes = [
+    'GET' => [
+        '/users' => 'getAllUsers',
+        '/users/{id}' => 'getUserById',
+    ],
+    'POST' => [
+        '/users' => 'createUser',
+    ],
+    'PUT' => [
+        '/users/{id}' => 'updateUser',
+    ],
+    'DELETE' => [
+        '/users/{id}' => 'deleteUser',
+    ],
+];
+
+// Match the route
+$matched = false;
+foreach ($routes[$requestMethod] as $route => $handler) {
+    // Convert route pattern to regex
+    $pattern = str_replace('{id}', '(\d+)', $route);
+    $pattern = "@^$pattern$@";
+
+    if (preg_match($pattern, $requestUri, $matches)) {
+        $matched = true;
+        call_user_func($handler, $matches);
+        break;
+    }
+}
+
+if (!$matched) {
+    sendResponse(404, null, 'Route not found');
+}
+
 // GET all users
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && !isset($_GET['id'])) {
+function getAllUsers() {
+    global $conn;
     $sql = "SELECT * FROM users";
     $result = $conn->query($sql);
 
@@ -44,8 +87,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !isset($_GET['id'])) {
 }
 
 // GET a single user by ID
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
-    $id = $_GET['id'];
+function getUserById($matches) {
+    global $conn;
+    $id = $matches[1]; // Extract ID from the URL
     $sql = "SELECT * FROM users WHERE id = $id";
     $result = $conn->query($sql);
 
@@ -58,7 +102,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 }
 
 // POST a new user
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+function createUser() {
+    global $conn;
     $data = json_decode(file_get_contents("php://input"), true);
 
     if (empty($data['id']) || empty($data['name']) || empty($data['email'])) {
@@ -79,7 +124,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // PUT a user by ID
-if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+function updateUser($matches) {
+    global $conn;
+    $id = $matches[1]; // Extract ID from the URL
     $data = json_decode(file_get_contents("php://input"), true);
 
     if (empty($data['id']) || empty($data['name']) || empty($data['email'])) {
@@ -103,8 +150,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 }
 
 // DELETE a user by ID
-if ($_SERVER['REQUEST_METHOD'] === 'DELETE' && isset($_GET['id'])) {    
-    $id = $_GET['id'];
+function deleteUser($matches) {
+    global $conn;
+    $id = $matches[1]; // Extract ID from the URL
     $sql = "DELETE FROM users WHERE id = $id";
     if ($conn->query($sql)) {
         if ($conn->affected_rows > 0) {
