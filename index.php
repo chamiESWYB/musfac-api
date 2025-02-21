@@ -5,10 +5,10 @@ header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
 header("Access-Control-Allow-Headers: Content-Type");
 
 // Database connection
-$host = 'sql307.infinityfree.com';
-$db = 'if0_38357642_mufac_rest_api';
-$user = 'if0_38357642'; 
-$pass = '22694Wcc123'; 
+$host = 'sql12.freesqldatabase.com';
+$db = 'sql12763737';
+$user = 'sql12763737'; 
+$pass = 'LDg43x1Fg7'; 
 
 $conn = new mysqli($host, $user, $pass, $db);
 
