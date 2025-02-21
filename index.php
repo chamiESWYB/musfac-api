@@ -153,18 +153,20 @@ function updateUser($matches) {
 function deleteUser($matches) {
     global $conn;
     $id = $matches[1]; // Extract ID from the URL
-    $sql = "DELETE FROM users WHERE id = $id";
-    if ($conn->query($sql)) {
-        if ($conn->affected_rows > 0) {
-            sendResponse(200, null, 'User deleted successfully');
+    if(!empty($id)){
+        $sql = "DELETE FROM users WHERE id = $id";
+        if ($conn->query($sql)) {
+            if ($conn->affected_rows > 0) {
+                sendResponse(200, null, 'User deleted successfully');
+            } else {
+                sendResponse(404, null, 'User not found');
+            }
         } else {
-            sendResponse(404, null, 'User not found');
-        }
-    } else {
-        sendResponse(500, null, 'Error deleting user: ' . $conn->error);
+            sendResponse(500, null, 'Error deleting user: ' . $conn->error);
     }        
-} else {
-    sendResponse(400, null, 'ID is required');
+    } else {
+        sendResponse(400, null, 'ID is required');
+    }
 }
 
 // Close the database connection
